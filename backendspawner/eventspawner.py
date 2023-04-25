@@ -232,7 +232,6 @@ class EventBackendSpawner(BackendSpawner):
         if type(self.events) != dict:
             self.events = {}
         self.events["latest"] = self.latest_events
-        self.stop_event = {}
 
         now = datetime.now().strftime("%Y_%m_%d %H:%M:%S.%f")[:-3]
         start_pre_msg = "Sending request to backend service to start your service."
