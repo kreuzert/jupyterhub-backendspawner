@@ -185,24 +185,26 @@ class EventBackendSpawner(BackendSpawner):
             "html_message": f"<details><summary>{now}: JupyterLab start failed. Deleting related resources...</summary>This may take a few seconds.</details>",
         }
         self.latest_events.append(event)
+        msg = "Unknown Error"
+        if hasattr(exception, "args") and len(exception.args) > 1:
+            msg = f"{exception.args[0]} - {exception.args[1]}"
         if hasattr(exception, "args") and len(exception.args) > 2:
             try:
                 body = json.loads(exception.args[2].body.decode())
+                msg += f": {body}"
             except:
                 self.log.exception("Could not load detailed error message")
-                body = "unknown error"
-            msg = f"{exception.args[0]} - {exception.args[1]}: {body}"
 
-            async def _get_stop_event(spawner):
-                now = datetime.now().strftime("%Y_%m_%d %H:%M:%S.%f")[:-3]
-                event = {
-                    "progress": 100,
-                    "failed": True,
-                    "html_message": f"<details><summary>{now}: JupyterLab stopped.</summary>{msg}</details>",
-                }
-                return event
+        async def _get_stop_event(spawner):
+            now = datetime.now().strftime("%Y_%m_%d %H:%M:%S.%f")[:-3]
+            event = {
+                "progress": 100,
+                "failed": True,
+                "html_message": f"<details><summary>{now}: JupyterLab stopped.</summary>{msg}</details>",
+            }
+            return event
 
-            self.stop_event = _get_stop_event
+        self.stop_event = _get_stop_event
         return super().run_failed_spawn_request_hook(exception)
 
     def run_pre_spawn_hook(self):
