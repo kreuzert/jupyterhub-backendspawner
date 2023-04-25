@@ -20,7 +20,6 @@ class EventBackendSpawner(BackendSpawner):
     _cancel_event_yielded = False
     latest_events = []
     events = {}
-    stop_event = {}
     clear_events = True
     yield_wait_seconds = 1
 
