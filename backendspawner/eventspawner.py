@@ -267,13 +267,14 @@ class EventBackendSpawner(BackendSpawner):
             cancelling_event = await self.get_cancelling_event()
             self.latest_events.append(cancelling_event)
 
-        # always use cancel=False, and call the function later if neccessary.
-        # Otherwise the stop_event would be attached after run_post_stop_hook was called.
-        await super().stop(now, cancel=False)
-
-        if not event:
-            event = await self.get_stop_event()
-        self.latest_events.append(event)
+        try:
+            # always use cancel=False, and call the function later if neccessary.
+            # Otherwise the stop_event would be attached after run_post_stop_hook was called.
+            await super().stop(now, cancel=False)
+        finally:
+            if not event:
+                event = await self.get_stop_event()
+            self.latest_events.append(event)
 
         if cancel:
             await self.cancel()
