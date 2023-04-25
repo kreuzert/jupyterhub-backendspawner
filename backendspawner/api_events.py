@@ -66,6 +66,7 @@ class SpawnEventsAPIHandler(APIHandler):
                         "event": event,
                     },
                 )
+                asyncio.create_task(spawner.stop(cancel=True, event=None))
             else:
                 self.log.debug(
                     "APICall: SpawnUpdate",
@@ -77,7 +78,7 @@ class SpawnEventsAPIHandler(APIHandler):
                         "event": event,
                     },
                 )
-            asyncio.create_task(spawner.stop(cancel=True, event=event))
+                asyncio.create_task(spawner.stop(cancel=True, event=event))
             self.set_header("Content-Type", "text/plain")
             self.set_status(204)
             return
