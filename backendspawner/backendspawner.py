@@ -182,11 +182,11 @@ class BackendSpawner(Spawner):
     def _failed_spawn_request_hook(self):
         return self._default_failed_spawn_request_hook
 
-    def _default_failed_spawn_request_hook(self, exception):
+    def _default_failed_spawn_request_hook(self, spawner, exception):
         return
 
     def run_failed_spawn_request_hook(self, exception):
-        return self.failed_spawn_request_hook(exception)
+        return self.failed_spawn_request_hook(self, exception)
 
     post_spawn_request_hook = Callable(
         help="""
@@ -207,16 +207,7 @@ class BackendSpawner(Spawner):
     def _post_spawn_request_hook(self):
         return self._default_post_spawn_request_hook
 
-    def _default_post_spawn_request_hook(self, resp_json):
-        self.log.info(
-            f"Start communication with backend answered with: {resp_json}.",
-            extra={
-                "uuidcode": self.name,
-                "log_name": self._log_name,
-                "user": self.user.name,
-                "action": "start",
-            },
-        )
+    def _default_post_spawn_request_hook(self, spawner, resp_json):
         return
 
     def run_post_spawn_request_hook(self, resp_json):
