@@ -274,6 +274,8 @@ class EventBackendSpawner(BackendSpawner):
         finally:
             if not event:
                 event = await self.get_stop_event()
+            elif callable(event):
+                event = await maybe_future(event(self))
             self.latest_events.append(event)
 
         if cancel:

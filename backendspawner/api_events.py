@@ -66,7 +66,17 @@ class SpawnEventsAPIHandler(APIHandler):
                         "event": event,
                     },
                 )
-                asyncio.create_task(spawner.stop(cancel=True, event=None))
+                # Add correct timestamp to event, at the moment it will be used.
+                async def stop_event(spawner):
+                    now = datetime.now().strftime("%Y_%m_%d %H:%M:%S.%f")[:-3]
+                    return {
+                        "failed": True,
+                        "ready": False,
+                        "progress": 100,
+                        "message": "",
+                        "html_message": f"<details><summary>{now}: {user_cancel_message}",
+                    }
+                asyncio.create_task(spawner.stop(cancel=True, event=stop_event))
             else:
                 self.log.debug(
                     "APICall: SpawnUpdate",
