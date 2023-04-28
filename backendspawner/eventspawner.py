@@ -124,15 +124,15 @@ class EventBackendSpawner(BackendSpawner):
         match = re.search(pattern, message)
         return match.group()
 
-    @property
-    def ready_event(self):
-        event = super().ready_event
+    def get_ready_event(self):
+        event = super().get_ready_event()
         ready_msg = f"Service {self.name} started."
         now = datetime.now().strftime("%Y_%m_%d %H:%M:%S.%f")[:-3]
         url = url_path_join(self.user.url, self.name, "/")
         event[
             "html_message"
         ] = f'<details><summary>{now}: {ready_msg}</summary>You will be redirected to <a href="{url}">{url}</a></details>'
+        self.latest_events.append(event)
         return event
 
     cancelling_event = Union(
