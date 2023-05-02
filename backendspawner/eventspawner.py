@@ -132,7 +132,8 @@ class EventBackendSpawner(BackendSpawner):
         event[
             "html_message"
         ] = f'<details><summary>{now}: {ready_msg}</summary>You will be redirected to <a href="{url}">{url}</a></details>'
-        self.latest_events.append(event)
+        if len(self.latest_events) == 0 or not self.latest_events[-1].get("ready"):
+            self.latest_events.append(event)
         return event
 
     cancelling_event = Union(
