@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="jupyterhub-backendspawner",
-    version="0.2.1",
+    version="0.2.2",
     description="JupyterHub Spawner to spawn on different systems.",
     url="https://github.com/kreuzert/jupyterhub-backendspawner",
     author="Tim Kreuzer",
