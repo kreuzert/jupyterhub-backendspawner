@@ -482,7 +482,7 @@ class BackendSpawner(Spawner):
         # if Spawner.stop was called by a custom APIHandler, we have to
         # set these variables here. If it's called via user.stop() stop_pending
         # is already true
-        if not self.stop_pending:
+        if not self._stop_pending:
             self._spawn_pending = False
             self._start_pending = False
             self._check_pending = False
