@@ -103,7 +103,12 @@ class SpawnEventsAPIHandler(APIHandler):
             else:
                 event["html_message"] = f"{now}: {event['html_message']}"
 
-        if event:
+        if not event or spawner._stop_pending:
+            self.set_header("Content-Type", "text/plain")
+            self.write("Bad Request")
+            self.set_status(400)
+            return
+        else:
             self.log.debug(
                 "APICall: SpawnUpdate",
                 extra={
@@ -119,11 +124,6 @@ class SpawnEventsAPIHandler(APIHandler):
                 spawner.latest_events.append(event)
             self.set_header("Content-Type", "text/plain")
             self.set_status(204)
-            return
-        else:
-            self.set_header("Content-Type", "text/plain")
-            self.write("Bad Request - No event in request body.")
-            self.set_status(400)
             return
 
 
