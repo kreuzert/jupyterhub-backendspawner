@@ -186,7 +186,7 @@ class BackendSpawner(Spawner):
         return
 
     def run_failed_spawn_request_hook(self, exception):
-        return self.failed_spawn_request_hook(self, exception)
+        self.failed_spawn_request_hook(self, exception)
 
     post_spawn_request_hook = Callable(
         help="""
