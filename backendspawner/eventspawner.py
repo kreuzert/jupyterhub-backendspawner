@@ -177,7 +177,7 @@ class EventBackendSpawner(BackendSpawner):
             stop_event = self.stop_event
         return stop_event
 
-    def run_failed_spawn_request_hook(self, exception):
+    async def run_failed_spawn_request_hook(self, exception):
         now = datetime.now().strftime("%Y_%m_%d %H:%M:%S.%f")[:-3]
         event = {
             "progress": 99,
@@ -185,9 +185,9 @@ class EventBackendSpawner(BackendSpawner):
             "html_message": f"<details><summary>{now}: JupyterLab start failed. Deleting related resources...</summary>This may take a few seconds.</details>",
         }
         self.latest_events.append(event)
-        # Ensure that we're waiting 2*spawner.yield_wait_seconds, so that
+        # Ensure that we're waiting 2*yield_wait_seconds, so that
         # events will be shown to the spawn-pending page.
-        await asyncio.sleep(2*spawner.yield_wait_seconds)
+        await asyncio.sleep(2*self.yield_wait_seconds)
 
         summary = "Unknown Error"
         details = ""
@@ -215,7 +215,7 @@ class EventBackendSpawner(BackendSpawner):
             return event
 
         self.stop_event = _get_stop_event
-        super().run_failed_spawn_request_hook(exception)
+        await super().run_failed_spawn_request_hook(exception)
 
     def run_pre_spawn_hook(self):
         """Some commands are required."""
