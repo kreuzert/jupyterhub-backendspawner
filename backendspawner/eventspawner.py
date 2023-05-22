@@ -20,7 +20,6 @@ class EventBackendSpawner(BackendSpawner):
     _cancel_event_yielded = False
     latest_events = []
     events = {}
-    clear_events = True
     yield_wait_seconds = 1
 
     def get_state(self):
@@ -51,14 +50,13 @@ class EventBackendSpawner(BackendSpawner):
         super().load_state(state)
         if "events" in state:
             self.events = state["events"]
+            if "latest" in self.events:
+                self.latest_events = self.events["latest"]
 
     def clear_state(self):
         """clear any state (called after shutdown)"""
         super().clear_state()
         self._cancel_event_yielded = False
-        if self.clear_events:
-            self.events = {}
-            self.clear_events = False
 
     async def _generate_progress(self):
         """Private wrapper of progress generator
