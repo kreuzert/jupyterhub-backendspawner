@@ -13,6 +13,9 @@ user_cancel_message = (
 
 
 class SpawnEventsAPIHandler(APIHandler):
+    def check_xsrf_cookie(self):
+        pass
+
     @needs_scope("read:servers")
     async def get(self, user_name, server_name=""):
         user = self.find_user(user_name)
