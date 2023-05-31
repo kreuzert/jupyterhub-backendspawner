@@ -189,6 +189,7 @@ class EventBackendSpawner(BackendSpawner):
                     details = str(error)
             except:
                 self.log.exception("Could not load detailed error message")
+                summary = f"{exception.args[0]} - {exception.args[1]}"
         elif hasattr(exception, "args") and len(exception.args) > 1:
             summary = f"{exception.args[0]} - {exception.args[1]}"
 
