@@ -388,7 +388,13 @@ class BackendSpawner(Spawner):
             )
 
     async def start(self):
-        self.log.info(f"Start single-user server {self.name}-{self.start_id}")
+        self.log.info(f"Start single-user server {self.name}-{self.start_id}",
+            extra={
+                "uuidcode": self.name,
+                "log_name": self._log_name,
+                "user": self.user.name,
+            },
+        )
         request_body = await self.get_request_body_start()
         request_header = await self.get_request_headers_start()
         url = await self.get_request_url_start()
@@ -406,6 +412,13 @@ class BackendSpawner(Spawner):
         except Exception as e:
             # If JupyterHub could not start the service, additional
             # actions may be required.
+            self.log.exception("Send Request failed",
+                extra={
+                    "uuidcode": self.name,
+                    "log_name": self._log_name,
+                    "user": self.user.name,
+                },
+            )
             await maybe_future(self.run_failed_spawn_request_hook(e))
 
             try:
