@@ -99,24 +99,12 @@ class BackendSpawner(Spawner):
         """,
     ).tag(config=True)
 
-    port = Integer(
-        help="""
-        The port for single-user servers to listen on.
-        """,
-    )
-
     @default('port')
     def get_port(self):
-        port = self.custom_port
-        if callable(port):
-            port = port()
-        return port
-
-    async def get_port(self):
-        if callable(self.port):
-            port = await maybe_future(self.port(self))
+        if callable(self.custom_port):
+            port = self.custom_port(self)
         else:
-            port = self.port
+            port = self.custom_port
         return port
 
     poll_interval = Union(
@@ -455,7 +443,7 @@ class BackendSpawner(Spawner):
             raise e
 
         service_address = self.get_service_address()
-        port = await self.get_port()
+        port = self.port
         self.log.debug(
             f"Expect JupyterLab at {service_address}:{port}",
             extra={
