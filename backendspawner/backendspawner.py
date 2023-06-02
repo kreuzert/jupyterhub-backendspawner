@@ -92,12 +92,25 @@ class BackendSpawner(Spawner):
             request_kwargs = self.request_kwargs
         return request_kwargs
 
-    port = Union(
+    custom_port = Union(
         [Integer(), Callable()],
         default_value=8080,
         help="""
         """,
     ).tag(config=True)
+
+    port = Integer(
+        help="""
+        The port for single-user servers to listen on.
+        """,
+    )
+
+    @default('port')
+    def get_port(self):
+        port = self.custom_port
+        if callable(port):
+            port = port()
+        return port
 
     async def get_port(self):
         if callable(self.port):
